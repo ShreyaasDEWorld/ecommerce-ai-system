@@ -4,11 +4,12 @@ import joblib
 from app.services.forecasting import predict_forecast
 from app.services.delay_model import load_delay_model, predict_delay
 from app.services.anomaly_model import load_anomaly_model, detect_anomaly
-from app.services.inventory import optimize_stock
+from app.services.inventory import advanced_inventory, eoq, safety_stock
+from app.utils.db_loader import get_demand_history
 
 router = APIRouter()
 
-# load models once (IMPORTANT)
+# load models once
 forecast_model = joblib.load("models/forecast_P1.pkl")
 delay_model = load_delay_model()
 anomaly_model = load_anomaly_model()
@@ -29,8 +30,20 @@ def optimize(data: dict):
         capacity=data.get("capacity", 200)
     )
 
-    # 3. Inventory
-    stock = optimize_stock(forecast_value)
+      # ✅ 3. GET REAL DEMAND HISTORY (ADD HERE)
+    product_id = data.get("product_id", "P1")
+    demand_history = get_demand_history(product_id)
+
+    #recommended_stock = advanced_inventory(forecast_value, demand_history)
+    
+    
+    # 4. Inventory (use demand_history)
+    product_id = data.get("product_id", "P1")
+    demand_history = get_demand_history(product_id)
+    recommended_stock = advanced_inventory(forecast_value, demand_history)
+    order_quantity = eoq(forecast_value)
+    safety = safety_stock(demand_history)
+
 
     # 4. Anomaly detection
     anomaly = detect_anomaly(
@@ -43,6 +56,10 @@ def optimize(data: dict):
     return {
         "forecast": forecast_value,
         "delay_risk": delay,
-        "recommended_stock": stock,
+        "inventory": {
+            "recommended": recommended_stock,
+            "eoq": order_quantity,
+            "safety_stock": safety
+        },
         "anomaly": anomaly
     }

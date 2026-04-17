@@ -1,33 +1,28 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine   # ✅ THIS LINE MUST EXIST
+DB_URL = "postgresql://mangesh:Admin@localhost:5432/Ecom"
+engine = create_engine(DB_URL)
 
-def load_data():
-    # update credentials
+def get_demand_history(product_id="P1", limit=30):
+    # reuse same DB connection
     DB_URL = "postgresql://mangesh:Admin@localhost:5432/Ecom"
-
     engine = create_engine(DB_URL)
 
-    query = "SELECT * FROM ecommerce_data"
+    query = f"""
+        SELECT orders
+        FROM ecommerce_data
+        WHERE product_id = '{product_id}'
+        ORDER BY date DESC
+        LIMIT {limit}
+    """
 
     df = pd.read_sql(query, engine)
 
-    return df
+    # convert to list
+    demand_history = df["orders"].tolist()
 
-def preprocess(df):
-    df["date"] = pd.to_datetime(df["date"])
+    # fallback (IMPORTANT)
+    if len(demand_history) == 0:
+        return [0]
 
-    # optional features
-    df["day_of_week"] = df["date"].dt.dayofweek
-    df["month"] = df["date"].dt.month
-
-    return df
-
-def load_and_preprocess():
-    df = load_data()
-
-    df["date"] = pd.to_datetime(df["date"])
-    df["day_of_week"] = df["date"].dt.dayofweek
-    df["month"] = df["date"].dt.month
-
-    return df
-
+    return demand_history
