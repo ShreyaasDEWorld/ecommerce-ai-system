@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine   # ✅ THIS LINE MUST EXIST
+
 DB_URL = "postgresql://mangesh:Admin@localhost:5432/Ecom"
 engine = create_engine(DB_URL)
 
