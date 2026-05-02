@@ -25,10 +25,17 @@ This project is an AI-powered backend system for:
 
 ## ▶️ How to Run
 
+python -m venv .venv
+.venv\Scripts\activate
+
+deactivate
+
 ```bash
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 
+# save your depedencies 
+pip freeze > requirements.txt
 
 API
 

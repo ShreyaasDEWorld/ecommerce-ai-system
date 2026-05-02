@@ -1,29 +1,22 @@
 import pandas as pd
-from sqlalchemy import create_engine   # ✅ THIS LINE MUST EXIST
+from sqlalchemy import create_engine
 
 DB_URL = "postgresql://mangesh:Admin@localhost:5432/Ecom"
 engine = create_engine(DB_URL)
 
-def get_demand_history(product_id="P1", limit=30):
-    # reuse same DB connection
-    DB_URL = "postgresql://mangesh:Admin@localhost:5432/Ecom"
-    engine = create_engine(DB_URL)
 
+def load_and_preprocess(product_id="P1"):
     query = f"""
-        SELECT orders
+        SELECT date, orders,stock, capacity
         FROM ecommerce_data
         WHERE product_id = '{product_id}'
-        ORDER BY date DESC
-        LIMIT {limit}
+        ORDER BY date
     """
 
     df = pd.read_sql(query, engine)
 
-    # convert to list
-    demand_history = df["orders"].tolist()
+    # safety
+    if df.empty:
+        raise ValueError(f"No data found for {product_id}")
 
-    # fallback (IMPORTANT)
-    if len(demand_history) == 0:
-        return [0]
-
-    return demand_history
+    return df
