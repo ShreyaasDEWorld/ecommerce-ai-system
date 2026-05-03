@@ -40,3 +40,4 @@ def predict_delay(model, orders, stock, capacity):
 
     prob = model.predict_proba(data)[0][1]
     return float(prob)
+

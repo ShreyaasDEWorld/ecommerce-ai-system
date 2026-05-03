@@ -31,8 +31,8 @@ def optimize(data: dict):
     )
 
       # ✅ 3. GET REAL DEMAND HISTORY (ADD HERE)
-    product_id = data.get("product_id", "P1")
-    demand_history = get_demand_history(product_id)
+    #product_id = data.get("product_id", "P1")
+    #demand_history = get_demand_history(product_id)
 
     #recommended_stock = advanced_inventory(forecast_value, demand_history)
     
