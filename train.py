@@ -5,6 +5,7 @@ from app.utils.db_loader import load_and_preprocess
 from app.services.forecasting import train_forecast
 from app.services.delay_model import train_delay_model
 from app.services.anomaly_model import train_anomaly_model
+import numpy as np
 
 os.makedirs("models", exist_ok=True)
 
@@ -14,7 +15,7 @@ df = load_and_preprocess("P1")
 #if "delay" not in df.columns:
 #    df["delay"] = (df["orders"] > df["capacity"]).astype(int)
 
-import numpy as np
+
 
 df["delay"] = (
                 (df["orders"] > df["capacity"]) |

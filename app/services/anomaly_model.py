@@ -5,6 +5,7 @@ def train_anomaly_model(df):
     # features (same as delay model)
     X = df[["orders", "stock", "capacity"]]
 
+
     model = IsolationForest(
         contamination=0.05,  # 5% anomalies
         random_state=42
