@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from app.api import optimize   # 👈 import
+from app.api.optimize import router as optimize_router
 
 app = FastAPI()
 
-app.include_router(optimize.router)  # 👈 connect
+app.include_router(optimize_router)
+
 @app.get("/")
 def home():
     return {"status": "AI system running 🚀"}

@@ -6,7 +6,7 @@ from app.services.forecasting import predict_forecast
 from app.services.delay_model import load_delay_model, predict_delay
 from app.services.anomaly_model import load_anomaly_model, detect_anomaly
 from app.services.inventory import advanced_inventory, eoq, safety_stock
-from app.utils.db_loader import get_demand_history
+# from app.utils.db_loader import get_demand_history
 
 router = APIRouter()
 
@@ -49,7 +49,8 @@ def optimize(data: OptimizeRequest):
     )
 
     # ✅ Fetch demand ONCE
-    demand_history = get_demand_history(product_id)
+    # demand_history = get_demand_history(product_id)
+    demand_history = [100, 120, 130, 110]
 
     # 3. Inventory
     recommended_stock = advanced_inventory(forecast_value, demand_history)
